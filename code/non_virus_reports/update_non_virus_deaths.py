@@ -1,5 +1,5 @@
 import requests
-import re 
+import re
 import os.path
 from os import path
 import bs4
@@ -27,66 +27,48 @@ couch = couchdb.Server(covid_db_full_url)
 #database = couch[couchdb_db_name]
 
 
-states = {}
-states["Andhra Pradesh"]="AP"
-#states["Andra Pradesh"]="AP"
-states["Arunachal Pradesh"]="AR"
-states["Assam"]="AS"
-states["Bihar"]="BR"
-#states["Chattisgarh"]="CT"
-states["Chhattisgarh"]="CT"
-#states["Chhatisgarh"]="CT"
-states["Goa"]="GA"
-states["Gujarat"]="GJ"
-states["Haryana"]="HR"
-states["Himachal Pradesh"]="HP"
-states["Jharkhand"]="JH"
-states["Karnataka"]="KA"
-states["Kerala"]="KL"
-states["Madhya Pradesh"]="MP"
-#states["Madhya Pradesh."]="MP"
-#states["MP"]="MP"
-states["Maharashtra"]="MH"
-#states["Maharahstra"]="MH"
-#states["Maharastra"]="MH"
-#states["Maharasthra"]="MH"
-#states["Maharashta"]="MH"
-
-states["Manipur"]="MN"
-states["Meghalaya"]="ML"
-states["Mizoram"]="MZ"
-states["Nagaland"]="NL"
-states["Odisha"]="OR"
-#states["Orissa"]="OR"
-states["Punjab"]="PB"
-states["Rajasthan"]="RJ"
-#states["Rajastha"]="RJ"
-states["Sikkim"]="SK"
-states["Tamil Nadu"]="TN"
-#states["Telengana"]="TG"
-states["Telangana"]="TG"
-#states["Telanga"]="TG"
-states["Tripura"]="TR"
-states["Uttarakhand"]="UT"
-#states["Uttrakhand"]="UT"
-states["Uttar Pradesh"]="UP"
-states["UP"]="UP"
-states["West Bengal"]="WB"
-states["Andaman and Nicobar Islands"]="AN"
-states["Chandigarh"]="CH"
-states["Dadra and Nagar Haveli"]="DN"
-states["Daman and Diu"]="DD"
-states["Delhi"]="DL"
-states["Jammu and Kashmir"]="JK"
-#states["Jammu & Kashmir"]="JK"
-#states["Kashmir"]="JK"
-#states["JK"]="JK"
-states["Ladakh"]="LA"
-states["Lakshadweep"]="LD"
-states["Pondicherry"]="PY"
-#states["Puducherry"]="PY"
-states["Unspecified"] = ""
-states[""] = ""
+states = {
+    "Andhra Pradesh": "AP",
+    "Arunachal Pradesh": "AR",
+    "Assam": "AS",
+    "Bihar": "BR",
+    "Chhattisgarh": "CT",
+    "Goa": "GA",
+    "Gujarat": "GJ",
+    "Haryana": "HR",
+    "Himachal Pradesh": "HP",
+    "Jharkhand": "JH",
+    "Karnataka": "KA",
+    "Kerala": "KL",
+    "Madhya Pradesh": "MP",
+    "Maharashtra": "MH",
+    "Manipur": "MN",
+    "Meghalaya": "ML",
+    "Mizoram": "MZ",
+    "Nagaland": "NL",
+    "Odisha": "OR",
+    "Punjab": "PB",
+    "Rajasthan": "RJ",
+    "Sikkim": "SK",
+    "Tamil Nadu": "TN",
+    "Telangana": "TG",
+    "Tripura": "TR",
+    "Uttarakhand": "UT",
+    "Uttar Pradesh": "UP",
+    "UP": "UP",
+    "West Bengal": "WB",
+    "Andaman and Nicobar Islands": "AN",
+    "Chandigarh": "CH",
+    "Dadra and Nagar Haveli": "DN",
+    "Daman and Diu": "DD",
+    "Delhi": "DL",
+    "Jammu and Kashmir": "JK",
+    "Ladakh": "LA",
+    "Lakshadweep": "LD",
+    "Pondicherry": "PY",
+    "Unspecified": "",
+    "": "",
+}
 
 
 
@@ -98,20 +80,20 @@ def getDateTimeObject(passed_string):
             return "2020-06"
       if passed_string == "unclear":
             return "2020"
-      
+
       print("incoming", passed_string)
       passed_string = passed_string.replace(" ","")
-      passed_string = passed_string.replace("notspeficied","")      
-      passed_string = passed_string.replace("notspecified","")      
-      passed_string = passed_string.replace("Unspecified","")      
-      passed_string = passed_string.replace("not speficied","")      
+      passed_string = passed_string.replace("notspeficied","")
+      passed_string = passed_string.replace("notspecified","")
+      passed_string = passed_string.replace("Unspecified","")
+      passed_string = passed_string.replace("not speficied","")
       passed_string = passed_string.replace("\n","")
       passed_string = passed_string.replace("Notspecified","")
       passed_string = passed_string.replace("unspecified","")
       passed_string = passed_string.replace("unclear","")
 
-      
-      if passed_string == "" or passed_string == "-":
+
+      if passed_string in ["", "-"]:
             return ""
       date_time_obj1 = datetime.datetime.strptime(passed_string,"%B%d,%Y" )  #      
       return time.strftime("%Y-%m-%d", date_time_obj1.timetuple())
@@ -126,16 +108,12 @@ with open(file_name) as csv_file:
       csv_reader = csv.reader(csv_file, delimiter='\t')
       line_count = 0
       insert_rows = 0
-      for row in csv_reader:            
+      for row in csv_reader:      
             print("------------------------------------------------------------------------------")
-            if line_count == 0:
-                  pass
-            else:
+            if line_count != 0:
                   batch = row[0]
 
-                  if batch.strip() == batch_to_process:
-                        pass
-                  else:
+                  if batch.strip() != batch_to_process:
                         #anything else, skip
                         continue
 
@@ -153,11 +131,11 @@ with open(file_name) as csv_file:
                   reasons = row[7]
                   convert_array = [x.strip() for x in reasons.split(",")]
                   reasons_array = [x.capitalize() for x in convert_array]
-                  
+
 
                   source_publication = row[8]
 
-                  source_date = getDateTimeObject(row[9])   
+                  source_date = getDateTimeObject(row[9])
                   if incident_date == "" or incident_date is None:
                         incident_date = source_date
 
@@ -165,17 +143,17 @@ with open(file_name) as csv_file:
                   source_link = row[10]  
 
                   #_id = "{0}|{1}|{2}".format(source_date, "non_virus_deaths", batch)
-                  data = {}
-                  #data["_id"] = _id
-                  data["type"] = "non_virus_deaths"
-                  data["location"] = location
-                  data["district"] = district
-                  data["state"] = states[state]       
-                  data["incident_date"] = incident_date 
-                  data["deaths"] = deaths
-                  data["reason"] = reasons_array
-                  data["source_date"] = source_date
-                  data["source_link"] = source_link
+                  data = {
+                      "type": "non_virus_deaths",
+                      "location": location,
+                      "district": district,
+                      "state": states[state],
+                      "incident_date": incident_date,
+                      "deaths": deaths,
+                      "reason": reasons_array,
+                      "source_date": source_date,
+                      "source_link": source_link,
+                  }
                   parsed_uri = urlparse(source_link)
                   source = parsed_uri.netloc
                   if "archive.org" in source:
@@ -183,24 +161,14 @@ with open(file_name) as csv_file:
                   if "docs.google.com" in source:
                         source = source_publication
                   data["source"] = source
-                  data["category"] = row[11] 
-                  data["name_age"] = row[12] 
+                  data["category"] = row[11]
+                  data["name_age"] = row[12]
                   data["occupation"] = row[13] 
-                  
+
                   insert_rows = insert_rows + 1
                   print("----------------------------------------------------------------------------{0}, line_count={1}".format(insert_rows, line_count+1 ))
                   print(data)
                   total_deaths = total_deaths + deaths
-
-                  # if (line_count+1) == int(row[14]):
-                  #       pass
-                  # else: 
-                  #       break
-
-
-
-                  #database.save(data)     
-                              
 
             #print(message)
             line_count = line_count + 1

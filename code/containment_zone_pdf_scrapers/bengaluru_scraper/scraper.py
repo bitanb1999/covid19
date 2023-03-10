@@ -23,6 +23,12 @@ pdf_path = "./downloads/city-containment-zones-backup/bengaluru/"
 output_path = "./data/containment_zones/bengaluru"
 
 
-tabula.convert_into(pdf_path + pdf_name + ".pdf", output_path + "_" + data_date + ".csv", output_format="csv", pages= start_range +  "-" + end_range, stream=True)
+tabula.convert_into(
+    pdf_path + pdf_name + ".pdf",
+    f"{output_path}_{data_date}.csv",
+    output_format="csv",
+    pages=f"{start_range}-{end_range}",
+    stream=True,
+)
 
 

@@ -1,5 +1,5 @@
 import requests
-import re 
+import re
 import os.path
 from os import path
 import bs4
@@ -22,7 +22,7 @@ pushover_api_token =str(os.environ.get("pushover_api_token"))
 pushover_user_key = str(os.environ.get("pushover_user_key"))
 pushover_url = "https://api.pushover.net/1/messages.json"
 covid_db_full_url = str(os.environ.get("covid_db_full_url"))
-archive_folder_path = str(os.environ.get("archive_folder_path")) 
+archive_folder_path = str(os.environ.get("archive_folder_path"))
 force_run = False
 
 couchdb_db_name = "covid19"
@@ -31,8 +31,7 @@ couch = couchdb.Server(covid_db_full_url)
 
 for d in database:
 		data = database[d]
-		if "type" in data:
-			if data["type"] == "non_virus_deaths":
+		if "type" in data and data["type"] == "non_virus_deaths":
 				print(data)
 				#database.delete(data)
 				#time.sleep(.05)
